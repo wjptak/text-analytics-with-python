@@ -17,10 +17,7 @@ np.square(5)
 
 # a more complex function with variable number of arguments
 def squares(*args):
-    squared_args = []
-    for item in args: 
-        squared_args.append(item*item)
-    return squared_args
+    return [item*item for item in args]
 
 squares(1,2,3,4,5)
 

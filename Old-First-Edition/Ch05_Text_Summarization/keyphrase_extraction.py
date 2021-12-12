@@ -35,7 +35,7 @@ def get_top_ngrams(corpus, ngram_val=1, limit=5):
     ngrams_freq_dist = nltk.FreqDist(ngrams)
     sorted_ngrams_fd = sorted(ngrams_freq_dist.items(), 
                               key=itemgetter(1), reverse=True)
-    sorted_ngrams = sorted_ngrams_fd[0:limit]
+    sorted_ngrams = sorted_ngrams_fd[:limit]
     sorted_ngrams = [(' '.join(text), freq) 
                      for text, freq in sorted_ngrams]
 

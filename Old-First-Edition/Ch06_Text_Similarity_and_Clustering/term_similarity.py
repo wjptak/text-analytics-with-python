@@ -20,9 +20,8 @@ def boc_term_vectors(word_list):
     unique_chars = np.unique(
                         np.hstack([list(word) 
                         for word in word_list]))
-    word_list_term_counts = [{char: count for char, count in itemfreq(list(word))}
-                             for word in word_list]
-    
+    word_list_term_counts = [dict(itemfreq(list(word))) for word in word_list]
+
     boc_vectors = [np.array([int(word_term_counts.get(char, 0)) 
                             for char in unique_chars])
                    for word_term_counts in word_list_term_counts]
@@ -68,8 +67,7 @@ def manhattan_distance(u, v, norm=False):
 def euclidean_distance(u,v):
     if u.shape != v.shape:
         raise ValueError('The vectors must have equal lengths.')
-    distance = np.sqrt(np.sum(np.square(u - v)))
-    return distance
+    return np.sqrt(np.sum(np.square(u - v)))
 
 import copy
 import pandas as pd
@@ -113,10 +111,9 @@ def levenshtein_edit_distance(u, v):
     return distance, edit_matrix
     
 def cosine_distance(u, v):
-    distance = 1.0 - (np.dot(u, v) / 
+    return 1.0 - (np.dot(u, v) / 
                         (np.sqrt(sum(np.square(u))) * np.sqrt(sum(np.square(v))))
                      )
-    return distance
 
 
 # DEMOS!

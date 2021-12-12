@@ -46,9 +46,8 @@ def compute_cosine_similarity(doc_features, corpus_features,
                         corpus_features.T)
     # get docs with highest similarity scores
     top_docs = similarity.argsort()[::-1][:top_n]
-    top_docs_with_score = [(index, round(similarity[index], 3))
+    return [(index, round(similarity[index], 3))
                             for index in top_docs]
-    return top_docs_with_score
 
     
 print 'Document Similarity Analysis using Cosine Similarity'
@@ -84,9 +83,8 @@ def compute_hellinger_bhattacharya_distance(doc_features, corpus_features,
                                 axis=1)))
     # get docs with lowest distance scores                            
     top_docs = distance.argsort()[:top_n]
-    top_docs_with_score = [(index, round(distance[index], 3))
-                            for index in top_docs]
-    return top_docs_with_score 
+    return [(index, round(distance[index], 3))
+                            for index in top_docs] 
 
 print 'Document Similarity Analysis using Hellinger-Bhattacharya distance'
 print '='*60
@@ -114,8 +112,7 @@ def compute_corpus_term_idfs(corpus_features, norm_corpus):
     dfs = np.diff(sp.csc_matrix(corpus_features, copy=True).indptr)
     dfs = 1 + dfs # to smoothen idf later
     total_docs = 1 + len(norm_corpus)
-    idfs = 1.0 + np.log(float(total_docs) / dfs)
-    return idfs
+    return 1.0 + np.log(float(total_docs) / dfs)
 
 
 def compute_bm25_similarity(doc_features, corpus_features,
@@ -127,7 +124,7 @@ def compute_bm25_similarity(doc_features, corpus_features,
     # this is to keep a note of which terms exist per document
     doc_features = doc_features.toarray()[0]
     doc_features[doc_features >= 1] = 1
-    
+
     # compute the document idf scores for present terms
     doc_idfs = doc_features * term_idfs
     # compute numerator expression in BM25 equation
@@ -145,9 +142,8 @@ def compute_bm25_similarity(doc_features, corpus_features,
                          axis=1)
     # get top n relevant docs with highest BM25 score                     
     top_docs = bm25_scores.argsort()[::-1][:top_n]
-    top_docs_with_score = [(index, round(bm25_scores[index], 3))
+    return [(index, round(bm25_scores[index], 3))
                             for index in top_docs]
-    return top_docs_with_score
 
 vectorizer, corpus_features = build_feature_matrix(norm_corpus,
                                                    feature_type='frequency')

@@ -34,7 +34,7 @@ def get_sentence_tree_constituents(sentence_tree):
 def process_sentence_tree(sentence_tree):
     
     tree_constituents = get_sentence_tree_constituents(sentence_tree)
-    processed_tree = [
+    return [
                         (item.type,
                          [
                              (w.string, w.type)
@@ -49,8 +49,6 @@ def process_sentence_tree(sentence_tree):
                              )
                              for item in tree_constituents
                     ]
-    
-    return processed_tree
     
 def print_sentence_tree(sentence_tree):
     
