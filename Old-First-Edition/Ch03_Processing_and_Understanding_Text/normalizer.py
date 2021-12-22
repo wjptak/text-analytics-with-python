@@ -17,8 +17,7 @@ corpus = ["The brown fox wasn't that quick and he couldn't win the race",
 
 def tokenize_text(text):
     sentences = nltk.sent_tokenize(text)
-    word_tokens = [nltk.word_tokenize(sentence) for sentence in sentences] 
-    return word_tokens
+    return [nltk.word_tokenize(sentence) for sentence in sentences]
     
 token_list = [tokenize_text(text) 
               for text in corpus]
@@ -29,8 +28,7 @@ print
     
 def remove_characters_after_tokenization(tokens):
     pattern = re.compile('[{}]'.format(re.escape(string.punctuation)))
-    filtered_tokens = filter(None, [pattern.sub('', token) for token in tokens])
-    return filtered_tokens
+    return filter(None, [pattern.sub('', token) for token in tokens])
     
 filtered_list_1 =  [filter(None,[remove_characters_after_tokenization(tokens) 
                                 for tokens in sentence_tokens]) 
@@ -42,13 +40,8 @@ print
 def remove_characters_before_tokenization(sentence,
                                           keep_apostrophes=False):
     sentence = sentence.strip()
-    if keep_apostrophes:
-        PATTERN = r'[?|$|&|*|%|@|(|)|~]'
-        filtered_sentence = re.sub(PATTERN, r'', sentence)
-    else:
-        PATTERN = r'[^a-zA-Z0-9 ]'
-        filtered_sentence = re.sub(PATTERN, r'', sentence)
-    return filtered_sentence
+    PATTERN = r'[?|$|&|*|%|@|(|)|~]' if keep_apostrophes else r'[^a-zA-Z0-9 ]'
+    return re.sub(PATTERN, r'', sentence)
     
 filtered_list_2 = [remove_characters_before_tokenization(sentence) 
                     for sentence in corpus]    
@@ -69,9 +62,10 @@ def expand_contractions(sentence, contraction_mapping):
     def expand_match(contraction):
         match = contraction.group(0)
         first_char = match[0]
-        expanded_contraction = contraction_mapping.get(match)\
-                                if contraction_mapping.get(match)\
-                                else contraction_mapping.get(match.lower())                       
+        expanded_contraction = contraction_mapping.get(
+            match
+        ) or contraction_mapping.get(match.lower())
+
         expanded_contraction = first_char+expanded_contraction[1:]
         return expanded_contraction
         
@@ -92,8 +86,7 @@ print corpus[0].upper()
 # removing stopwords
 def remove_stopwords(tokens):
     stopword_list = nltk.corpus.stopwords.words('english')
-    filtered_tokens = [token for token in tokens if token not in stopword_list]
-    return filtered_tokens
+    return [token for token in tokens if token not in stopword_list]
     
 expanded_corpus_tokens = [tokenize_text(text)
                           for text in expanded_corpus]    

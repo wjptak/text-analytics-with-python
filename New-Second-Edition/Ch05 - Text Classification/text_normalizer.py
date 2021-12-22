@@ -63,9 +63,10 @@ def expand_contractions(text, contraction_mapping=CONTRACTION_MAP):
     def expand_match(contraction):
         match = contraction.group(0)
         first_char = match[0]
-        expanded_contraction = contraction_mapping.get(match)\
-                                if contraction_mapping.get(match)\
-                                else contraction_mapping.get(match.lower())                       
+        expanded_contraction = contraction_mapping.get(
+            match
+        ) or contraction_mapping.get(match.lower())
+
         expanded_contraction = first_char+expanded_contraction[1:]
         return expanded_contraction
         
@@ -92,8 +93,7 @@ def remove_stopwords(text, is_lower_case=False, stopwords=stopword_list):
         filtered_tokens = [token for token in tokens if token not in stopwords]
     else:
         filtered_tokens = [token for token in tokens if token.lower() not in stopwords]
-    filtered_text = ' '.join(filtered_tokens)    
-    return filtered_text
+    return ' '.join(filtered_tokens)
 
 
 def normalize_corpus(corpus, html_stripping=True, contraction_expansion=True,

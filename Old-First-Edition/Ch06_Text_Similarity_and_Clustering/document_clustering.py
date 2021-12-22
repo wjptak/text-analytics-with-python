@@ -67,22 +67,21 @@ def get_cluster_data(clustering_obj, movie_data,
                      feature_names, num_clusters,
                      topn_features=10):
 
-    cluster_details = {}  
+    cluster_details = {}
     # get cluster centroids
     ordered_centroids = clustering_obj.cluster_centers_.argsort()[:, ::-1]
     # get key features for each cluster
     # get movies belonging to each cluster
     for cluster_num in range(num_clusters):
-        cluster_details[cluster_num] = {}
-        cluster_details[cluster_num]['cluster_num'] = cluster_num
+        cluster_details[cluster_num] = {'cluster_num': cluster_num}
         key_features = [feature_names[index] 
                         for index 
                         in ordered_centroids[cluster_num, :topn_features]]
         cluster_details[cluster_num]['key_features'] = key_features
-        
+
         movies = movie_data[movie_data['Cluster'] == cluster_num]['Title'].values.tolist()
         cluster_details[cluster_num]['movies'] = movies
-    
+
     return cluster_details
         
        
@@ -109,8 +108,7 @@ def plot_clusters(num_clusters, feature_matrix,
                   plot_size=(16,8)):
     # generate random color for clusters                  
     def generate_random_color():
-        color = '#%06x' % random.randint(0, 0xFFFFFF)
-        return color
+        return '#%06x' % random.randint(0, 0xFFFFFF)
     # define markers for clusters    
     markers = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
     # build cosine distance matrix
@@ -225,8 +223,7 @@ from scipy.cluster.hierarchy import ward, dendrogram
 def ward_hierarchical_clustering(feature_matrix):
     
     cosine_distance = 1 - cosine_similarity(feature_matrix)
-    linkage_matrix = ward(cosine_distance)
-    return linkage_matrix
+    return ward(cosine_distance)
     
 def plot_hierarchical_clusters(linkage_matrix, movie_data, figure_size=(8,12)):
     # set size

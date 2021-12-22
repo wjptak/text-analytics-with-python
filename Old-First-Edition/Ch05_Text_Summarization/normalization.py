@@ -29,9 +29,10 @@ def expand_contractions(text, contraction_mapping):
     def expand_match(contraction):
         match = contraction.group(0)
         first_char = match[0]
-        expanded_contraction = contraction_mapping.get(match)\
-                                if contraction_mapping.get(match)\
-                                else contraction_mapping.get(match.lower())                       
+        expanded_contraction = contraction_mapping.get(
+            match
+        ) or contraction_mapping.get(match.lower())
+
         expanded_contraction = first_char+expanded_contraction[1:]
         return expanded_contraction
         
@@ -71,23 +72,20 @@ def lemmatize_text(text):
     lemmatized_tokens = [wnl.lemmatize(word, pos_tag) if pos_tag
                          else word                     
                          for word, pos_tag in pos_tagged_text]
-    lemmatized_text = ' '.join(lemmatized_tokens)
-    return lemmatized_text
+    return ' '.join(lemmatized_tokens)
     
 
 def remove_special_characters(text):
     tokens = tokenize_text(text)
     pattern = re.compile('[{}]'.format(re.escape(string.punctuation)))
     filtered_tokens = filter(None, [pattern.sub(' ', token) for token in tokens])
-    filtered_text = ' '.join(filtered_tokens)
-    return filtered_text
+    return ' '.join(filtered_tokens)
     
     
 def remove_stopwords(text):
     tokens = tokenize_text(text)
     filtered_tokens = [token for token in tokens if token not in stopword_list]
-    filtered_text = ' '.join(filtered_tokens)    
-    return filtered_text
+    return ' '.join(filtered_tokens)
 
 
 def unescape_html(parser, text):
@@ -96,22 +94,16 @@ def unescape_html(parser, text):
 
 def normalize_corpus(corpus, lemmatize=True, tokenize=False):
     
-    normalized_corpus = []  
+    normalized_corpus = []
     for text in corpus:
         text = html_parser.unescape(text)
         text = expand_contractions(text, CONTRACTION_MAP)
-        if lemmatize:
-            text = lemmatize_text(text)
-        else:
-            text = text.lower()
+        text = lemmatize_text(text) if lemmatize else text.lower()
         text = remove_special_characters(text)
         text = remove_stopwords(text)
         if tokenize:
             text = tokenize_text(text)
-            normalized_corpus.append(text)
-        else:
-            normalized_corpus.append(text)
-            
+        normalized_corpus.append(text)
     return normalized_corpus
 
 

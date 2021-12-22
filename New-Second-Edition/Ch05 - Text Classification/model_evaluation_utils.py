@@ -45,9 +45,7 @@ def train_predict_model(classifier,
                         test_features, test_labels):
     # build model    
     classifier.fit(train_features, train_labels)
-    # predict using model
-    predictions = classifier.predict(test_features) 
-    return predictions    
+    return classifier.predict(test_features)    
 
 
 def display_confusion_matrix(true_labels, predicted_labels, classes=[1,0]):
@@ -72,12 +70,15 @@ def display_confusion_matrix_pretty(true_labels, predicted_labels, classes=[1,0]
 
     cm = metrics.confusion_matrix(y_true=true_labels, y_pred=predicted_labels, 
                                   labels=classes)
-    cm_frame = pd.DataFrame(data=cm, 
-                            columns=pd.MultiIndex(levels=[['Predicted:'], classes], 
-                                                  labels=level_labels), 
-                            index=pd.MultiIndex(levels=[['Actual:'], classes], 
-                                                labels=level_labels)) 
-    return cm_frame
+    return pd.DataFrame(
+        data=cm,
+        columns=pd.MultiIndex(
+            levels=[['Predicted:'], classes], labels=level_labels
+        ),
+        index=pd.MultiIndex(
+            levels=[['Actual:'], classes], labels=level_labels
+        ),
+    )
     
 def display_classification_report(true_labels, predicted_labels, classes=[1,0]):
 
@@ -108,7 +109,7 @@ def plot_model_decision_surface(clf, train_features, train_labels,
     
     if train_features.shape[1] != 2:
         raise ValueError("X_train should have exactly 2 columnns!")
-    
+
     x_min, x_max = train_features[:, 0].min() - plot_step, train_features[:, 0].max() + plot_step
     y_min, y_max = train_features[:, 1].min() - plot_step, train_features[:, 1].max() + plot_step
     xx, yy = np.meshgrid(np.arange(x_min, x_max, plot_step),
@@ -119,17 +120,17 @@ def plot_model_decision_surface(clf, train_features, train_labels,
     if hasattr(clf_est, 'predict_proba'):
         Z = clf_est.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:,1]
     else:
-        Z = clf_est.predict(np.c_[xx.ravel(), yy.ravel()])    
+        Z = clf_est.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
     cs = plt.contourf(xx, yy, Z, cmap=cmap)
-    
+
     le = LabelEncoder()
     y_enc = le.fit_transform(train_labels)
     n_classes = len(le.classes_)
     plot_colors = ''.join(colors) if colors else [None] * n_classes
     label_names = le.classes_
-    markers = markers if markers else [None] * n_classes
-    alphas = alphas if alphas else [None] * n_classes
+    markers = markers or [None] * n_classes
+    alphas = alphas or [None] * n_classes
     for i, color in zip(range(n_classes), plot_colors):
         idx = np.where(y_enc == i)
         plt.scatter(train_features[idx, 0], train_features[idx, 1], c=color,
@@ -142,9 +143,9 @@ def plot_model_decision_surface(clf, train_features, train_labels,
 def plot_model_roc_curve(clf, features, true_labels, label_encoder=None, class_names=None):
     
     ## Compute ROC curve and ROC area for each class
-    fpr = dict()
-    tpr = dict()
-    roc_auc = dict()
+    fpr = {}
+    tpr = {}
+    roc_auc = {}
     if hasattr(clf, 'classes_'):
         class_labels = clf.classes_
     elif label_encoder:
@@ -164,13 +165,13 @@ def plot_model_roc_curve(clf, features, true_labels, label_encoder=None, class_n
             y_score = prob[:, prob.shape[1]-1]
         else:
             raise AttributeError("Estimator doesn't have a probability or confidence scoring system!")
-        
+
         fpr, tpr, _ = roc_curve(y_test, y_score)      
         roc_auc = auc(fpr, tpr)
         plt.plot(fpr, tpr, label='ROC curve (area = {0:0.2f})'
                                  ''.format(roc_auc),
                  linewidth=2.5)
-        
+
     elif n_classes > 2:
         if hasattr(clf, 'predict_proba'):
             y_score = clf.predict_proba(features)
@@ -216,7 +217,7 @@ def plot_model_roc_curve(clf, features, true_labels, label_encoder=None, class_n
                      linewidth=2, linestyle=':')
     else:
         raise ValueError('Number of classes should be atleast 2 or more')
-        
+
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])

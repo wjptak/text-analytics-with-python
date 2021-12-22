@@ -97,13 +97,11 @@ def get_topics_terms_weights(weights, feature_names):
     sorted_terms = np.array([list(feature_names[row]) 
                              for row 
                              in sorted_indices])
-    
-    topics = [np.vstack((terms.T, 
+
+    return [np.vstack((terms.T, 
                      term_weights.T)).T 
               for terms, term_weights 
-              in zip(sorted_terms, sorted_weights)]     
-    
-    return topics            
+              in zip(sorted_terms, sorted_weights)]            
   
                        
 def print_topics_udf(topics, total_topics=1,
@@ -141,10 +139,9 @@ def train_lsi_model_gensim(corpus, total_topics=2):
                      for text in norm_tokenized_corpus]
     tfidf = models.TfidfModel(mapped_corpus)
     corpus_tfidf = tfidf[mapped_corpus]
-    lsi = models.LsiModel(corpus_tfidf, 
+    return models.LsiModel(corpus_tfidf, 
                           id2word=dictionary,
                           num_topics=total_topics)
-    return lsi
  
 
 
@@ -158,11 +155,10 @@ def train_lda_model_gensim(corpus, total_topics=2):
                      for text in norm_tokenized_corpus]
     tfidf = models.TfidfModel(mapped_corpus)
     corpus_tfidf = tfidf[mapped_corpus]
-    lda = models.LdaModel(corpus_tfidf, 
+    return models.LdaModel(corpus_tfidf, 
                           id2word=dictionary,
                           iterations=1000,
-                          num_topics=total_topics)
-    return lda                     
+                          num_topics=total_topics)                     
 
 
 

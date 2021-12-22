@@ -9,10 +9,9 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.cross_validation import train_test_split
 
 def get_data():
-    data = fetch_20newsgroups(subset='all',
+    return fetch_20newsgroups(subset='all',
                               shuffle=True,
                               remove=('headers', 'footers', 'quotes'))
-    return data
     
 def prepare_datasets(corpus, labels, test_data_proportion=0.3):
     train_X, test_X, train_Y, test_Y = train_test_split(corpus, labels, 
